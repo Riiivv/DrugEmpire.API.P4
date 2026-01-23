@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="DrugEmpire.API/DrugEmpire.API.csproj" />
+  <Project Path="DrugEmpire.Application/DrugEmpire.Application.csproj" />
+  <Project Path="DrugEmpire.Domain/DrugEmpire.Domain.csproj" />
+  <Project Path="DrugEmpire.Infrastructure/DrugEmpire.Infrastructure.csproj" />
+  <Project Path="DrugEmpire.Test/DrugEmpire.Test.csproj" />
+</Solution>
