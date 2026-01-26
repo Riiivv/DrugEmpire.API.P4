@@ -7,7 +7,7 @@ using System.Text;
 
 namespace DrugEmpire.Infrastructure.Repositories
 {
-    public class OrderRepository:IOrderItem
+    public class OrderRepository: IOrder
     {
         private readonly DatabaseContext _context;
         public OrderRepository(DatabaseContext context)
@@ -49,6 +49,17 @@ namespace DrugEmpire.Infrastructure.Repositories
             existingOrder.Total = updateOrder.Total;
             await _context.SaveChangesAsync();
             return existingOrder;
+        }
+        public async Task<bool> DeleteOrderAsync(int id)
+        {
+            var order = await _context.Orders.FindAsync(id);
+            if (order == null)
+            {
+                throw new KeyNotFoundException("Order not found");
+            }
+            _context.Orders.Remove(order);
+            await _context.SaveChangesAsync();
+            return true;
         }
     }
 }

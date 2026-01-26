@@ -49,5 +49,15 @@ namespace DrugEmpire.Infrastructure.Repositories
             await _context.SaveChangesAsync();
             return existingProduct;
         }
+        public async Task DeleteProductAsync(int id)
+        {
+            var existingProduct = await _context.Products.FindAsync(id);
+            if (existingProduct == null)
+            {
+                throw new Exception("Product not found");
+            }
+            _context.Products.Remove(existingProduct);
+            await _context.SaveChangesAsync();
+        }
     }
 }

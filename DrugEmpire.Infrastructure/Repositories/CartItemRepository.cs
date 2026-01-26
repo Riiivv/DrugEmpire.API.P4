@@ -32,14 +32,14 @@ namespace DrugEmpire.Infrastructure.Repositories
             return existingCartItem;
         }
 
-        public async Task<CartItem> CreateCartItem(CartItem cartItem)
+        public async Task<CartItem> CreateCartItemAsync(CartItem cartItem)
         {
             _context.CartItems.Add(cartItem);
             await _context.SaveChangesAsync();
             return cartItem;
         }
 
-        public async Task<CartItem> UpdateCartItem(int id, CartItem cartItem)
+        public async Task<CartItem> UpdateCartItemAsync(int id, CartItem cartItem)
         {
             var existingCartItem = await _context.CartItems.FindAsync(id);
             if (existingCartItem == null)

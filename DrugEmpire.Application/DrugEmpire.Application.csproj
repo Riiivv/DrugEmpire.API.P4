@@ -10,10 +10,4 @@
     <ProjectReference Include="..\DrugEmpire.Domain\DrugEmpire.Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="DTOs\" />
-    <Folder Include="interfaces\" />
-    <Folder Include="services\" />
-  </ItemGroup>
-
 </Project>

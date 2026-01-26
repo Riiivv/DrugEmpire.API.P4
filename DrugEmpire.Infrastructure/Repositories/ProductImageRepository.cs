@@ -7,7 +7,7 @@ using System.Text;
 
 namespace DrugEmpire.Infrastructure.Repositories
 {
-    internal class ProductImageRepository:IProductImage
+    public class ProductImageRepository:IProductImage
     {
         private readonly DatabaseContext _context;
         public ProductImageRepository(DatabaseContext context) 

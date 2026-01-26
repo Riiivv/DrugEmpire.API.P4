@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DrugEmpire.Domain.entities;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -6,5 +7,10 @@ namespace DrugEmpire.Domain.interfaces
 {
     public interface ICartItem
     {
+        Task<List<CartItem>> GetAllCartItems();
+        Task<CartItem> GetItemByIdAsync(int id);
+        Task<CartItem> CreateCartItemAsync(CartItem cartItem);
+        Task<CartItem> UpdateCartItemAsync(int id, CartItem cartItem);
+        Task<bool> DeleteCartItemByIdAsync(int id);
     }
 }

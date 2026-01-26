@@ -66,6 +66,26 @@ namespace DrugEmpire.Infrastructure.Repositories
             await _context.SaveChangesAsync();
             return true;
         }
+
+        public Task<List<User>> GetUsersAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task AddUserAsync(User user)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task UpdateUserAsync(User user)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task DeleteUserAsync(int userId)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
 
