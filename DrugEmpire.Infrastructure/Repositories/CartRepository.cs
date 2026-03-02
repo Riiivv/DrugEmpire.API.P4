@@ -56,10 +56,5 @@ namespace DrugEmpire.Infrastructure.Repositories
             await _context.SaveChangesAsync();
             return true;
         }
-
-        Task<List<Cart>> ICart.GetCartByIdAsync(int id)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

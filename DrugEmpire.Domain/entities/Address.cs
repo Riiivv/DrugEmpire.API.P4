@@ -7,7 +7,7 @@ namespace DrugEmpire.Domain.entities
     public class Address
     {
         public int AddressId { get; set; }
-        public int? UserId { get; set; }
+        public int UserId { get; set; }
         public User User { get; set; }
 
         public string Name { get; set; }

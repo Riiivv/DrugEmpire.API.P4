@@ -1,10 +1,126 @@
-﻿using System;
+﻿using DrugEmpire.Application.DTOs;
+using DrugEmpire.Application.interfaces;
+using DrugEmpire.Domain.entities;
+using DrugEmpire.Domain.interfaces;
+using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Linq;
 
 namespace DrugEmpire.Application.services
 {
-    public class ProductService
+    public class ProductService : IProductService
     {
+        private readonly IProduct _ProductRepository;
+
+        public ProductService(IProduct productRepository)
+        {
+            _ProductRepository = productRepository;
+        }
+
+        public async Task<IEnumerable<ProductDTOResponse>> GetAllProducts()
+        {
+            var products = await _ProductRepository.GetProductsAsync();
+
+            return products.Select(p => new ProductDTOResponse
+            {
+                ProductId = p.ProductId,
+                Name = p.Name,
+                Description = p.Description,
+                Price = p.Price,
+                IsActive = p.IsActive
+            });
+        }
+
+        public async Task<ProductDTOResponse> GetProductById(int id)
+        {
+            var product = await _ProductRepository.GetProductByIdAsync(id);
+            if (product == null)
+                throw new Exception("Product not found");
+
+            return new ProductDTOResponse
+            {
+                ProductId = product.ProductId,
+                Name = product.Name,
+                Description = product.Description,
+                Price = product.Price,
+                IsActive = product.IsActive
+            };
+        }
+        public async Task<ProductDTOResponse> CreateProduct(ProductDTORequest productDtoRequest)
+        {
+            if (productDtoRequest == null)
+                throw new ArgumentNullException(nameof(productDtoRequest));
+
+            if (string.IsNullOrWhiteSpace(productDtoRequest.Name))
+                throw new Exception("Name is required");
+
+            if (productDtoRequest.Price <= 0)
+                throw new Exception("Price must be greater than 0");
+
+            var product = new Product
+            {
+                Name = productDtoRequest.Name,
+                Description = productDtoRequest.Description,
+                Price = productDtoRequest.Price,
+                IsActive = productDtoRequest.IsActive,
+
+            };
+
+            // 1) Gem i databasen
+            var created = await _ProductRepository.CreateProductAsync(product);
+
+            // 2) Map til DTO
+            return new ProductDTOResponse
+            {
+                ProductId = created.ProductId,
+                Name = created.Name,
+                Description = created.Description,
+                Price = created.Price,
+                IsActive = created.IsActive
+            };
+        }
+
+        public async Task<ProductDTOResponse> UpdateProduct(int id, ProductDTORequest productDtoRequest)
+        {
+            if (productDtoRequest == null)
+                throw new ArgumentNullException(nameof(productDtoRequest));
+
+            if (string.IsNullOrWhiteSpace(productDtoRequest.Name))
+                throw new Exception("Name is required");
+
+            if (productDtoRequest.Price <= 0)
+                throw new Exception("Price must be greater than 0");
+
+            var existing = await _ProductRepository.GetProductByIdAsync(id);
+            if (existing == null)
+                throw new Exception("Product not found");
+
+            existing.Name = productDtoRequest.Name;
+            existing.Description = productDtoRequest.Description;
+            existing.Price = productDtoRequest.Price;
+            existing.IsActive = productDtoRequest.IsActive;
+
+            var updated = await _ProductRepository.UpdateProductAsync(id, existing);
+
+            return new ProductDTOResponse
+            {
+                ProductId = updated.ProductId,
+                Name = updated.Name,
+                Description = updated.Description,
+                Price = updated.Price,
+                IsActive = updated.IsActive
+            };
+        }
+
+        public async Task<bool> DeleteProduct(int id)
+        {
+            var existing = await _ProductRepository.GetProductByIdAsync(id);
+            if (existing == null)
+                throw new Exception("Product not found");
+
+            await _ProductRepository.DeleteProductAsync(id);
+            return true;
+        }
     }
 }

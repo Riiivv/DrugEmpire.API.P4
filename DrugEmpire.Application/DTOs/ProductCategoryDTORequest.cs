@@ -6,5 +6,8 @@ namespace DrugEmpire.Application.DTOs
 {
     public class ProductCategoryDTORequest
     {
+        public int ProductId { get; set; }
+        public int CategoryId { get; set; }
+
     }
 }

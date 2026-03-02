@@ -7,7 +7,7 @@ namespace DrugEmpire.Domain.interfaces
 {
     public interface IOrder
     {
-        Task<List<Order>> GetAllOrderAsync(int userid);
+        Task<List<Order>> GetAllOrderAsync();
         Task<Order> GetOrderByIdAsync(int id);
         Task<Order> CreateOrderAsync(Order order);
         Task<Order> UpdateOrderAsync(int id, Order updateOrder);

@@ -8,7 +8,7 @@ namespace DrugEmpire.Domain.entities
     {
         public int CartId { get; set; }
 
-        public int? UserId { get; set; }   // null hvis guest
+        public int UserId { get; set; }   // null hvis guest
         public User User { get; set; }
 
         public DateTime CreatedAt { get; set; }
