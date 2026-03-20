@@ -1,3 +1,5 @@
+using DrugEmpire.Application.interfaces;
+using DrugEmpire.Application.services;
 using DrugEmpire.Domain.entities;
 using DrugEmpire.Domain.interfaces;
 using DrugEmpire.Infrastructure;
@@ -11,9 +13,20 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 
 builder.Services.AddDbContext<DatabaseContext>(options =>
     options.UseSqlServer(connectionString));
-// Add services to the container.
 
+// 🔥 ADD CORS HER
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAngular",
+        policy =>
+        {
+            policy.WithOrigins("http://localhost:4200")
+                  .AllowAnyHeader()
+                  .AllowAnyMethod();
+        });
+});
 
+// Repositories
 builder.Services.AddScoped<IAddress, AddressRepository>();
 builder.Services.AddScoped<ICart, CartRepository>();
 builder.Services.AddScoped<ICartItem, CartItemRepository>();
@@ -26,14 +39,29 @@ builder.Services.AddScoped<IProduct, ProductRepository>();
 builder.Services.AddScoped<IProductCategory, ProductCategoryRepository>();
 builder.Services.AddScoped<IProductImage, ProductImageRepository>();
 builder.Services.AddScoped<IShipment, ShipmentRepository>();
+builder.Services.AddScoped<IUser, UserRepository>();
+
+// Services
+builder.Services.AddScoped<IAddressService, AddressService>();
+builder.Services.AddScoped<ICartService, CartService>();
+builder.Services.AddScoped<ICartItemService, CartItemService>();
+builder.Services.AddScoped<ICategoryService, CategoryService>();
+builder.Services.AddScoped<IInventoryItemService, InventoryItemService>();
+builder.Services.AddScoped<IOrderService, OrderService>();
+builder.Services.AddScoped<IOrderItemService, OrderItemService>();
+builder.Services.AddScoped<IPaymentTransactionService, PaymentTransactionService>();
+builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<IProductCategoryService, ProductCategoryService>();
+builder.Services.AddScoped<IProductImageService, ProductImageService>();
+builder.Services.AddScoped<IShipmentService, ShipmentService>();
+builder.Services.AddScoped<IUserService, UserService>();
 
 builder.Services.AddControllers();
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// Dev tools
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
@@ -41,6 +69,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+// 🔥 ADD CORS HER (VIGTIG PLACERING)
+app.UseCors("AllowAngular");
 
 app.UseAuthorization();
 

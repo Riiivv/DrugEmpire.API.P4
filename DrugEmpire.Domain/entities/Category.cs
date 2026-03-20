@@ -10,5 +10,6 @@ namespace DrugEmpire.Domain.entities
         public string Name { get; set; }
 
         public ICollection<Category> ProductCategories { get; set; } = new List<Category>();
+        public ICollection<Product> Products { get; set; } = new List<Product>();
     }
 }

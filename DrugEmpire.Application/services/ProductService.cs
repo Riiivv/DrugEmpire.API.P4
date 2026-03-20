@@ -28,7 +28,10 @@ namespace DrugEmpire.Application.services
                 Name = p.Name,
                 Description = p.Description,
                 Price = p.Price,
-                IsActive = p.IsActive
+                Sku = p.Sku,
+                IsActive = p.IsActive,
+                CategoryId = p.CategoryId,
+                CategoryName = p.Category != null ? p.Category.Name : null
             });
         }
 
@@ -44,9 +47,13 @@ namespace DrugEmpire.Application.services
                 Name = product.Name,
                 Description = product.Description,
                 Price = product.Price,
-                IsActive = product.IsActive
+                Sku = product.Sku,
+                IsActive = product.IsActive,
+                CategoryId = product.CategoryId,
+                CategoryName = product.Category != null ? product.Category.Name : null
             };
         }
+
         public async Task<ProductDTOResponse> CreateProduct(ProductDTORequest productDtoRequest)
         {
             if (productDtoRequest == null)
@@ -63,21 +70,23 @@ namespace DrugEmpire.Application.services
                 Name = productDtoRequest.Name,
                 Description = productDtoRequest.Description,
                 Price = productDtoRequest.Price,
+                Sku = productDtoRequest.Sku,
                 IsActive = productDtoRequest.IsActive,
-
+                CategoryId = productDtoRequest.CategoryId
             };
 
-            // 1) Gem i databasen
             var created = await _ProductRepository.CreateProductAsync(product);
 
-            // 2) Map til DTO
             return new ProductDTOResponse
             {
                 ProductId = created.ProductId,
                 Name = created.Name,
                 Description = created.Description,
                 Price = created.Price,
-                IsActive = created.IsActive
+                Sku = created.Sku,
+                IsActive = created.IsActive,
+                CategoryId = created.CategoryId,
+                CategoryName = created.Category != null ? created.Category.Name : null
             };
         }
 
@@ -99,7 +108,9 @@ namespace DrugEmpire.Application.services
             existing.Name = productDtoRequest.Name;
             existing.Description = productDtoRequest.Description;
             existing.Price = productDtoRequest.Price;
+            existing.Sku = productDtoRequest.Sku;
             existing.IsActive = productDtoRequest.IsActive;
+            existing.CategoryId = productDtoRequest.CategoryId;
 
             var updated = await _ProductRepository.UpdateProductAsync(id, existing);
 
@@ -109,7 +120,10 @@ namespace DrugEmpire.Application.services
                 Name = updated.Name,
                 Description = updated.Description,
                 Price = updated.Price,
-                IsActive = updated.IsActive
+                Sku = updated.Sku,
+                IsActive = updated.IsActive,
+                CategoryId = updated.CategoryId,
+                CategoryName = updated.Category != null ? updated.Category.Name : null
             };
         }
 
