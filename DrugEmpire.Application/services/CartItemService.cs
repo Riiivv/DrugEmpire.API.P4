@@ -28,7 +28,9 @@ namespace DrugEmpire.Application.services
                 CartId = i.CartId,
                 CartItemId = i.CartItemId,
                 ProductId = i.ProductId,
+                ProductName = i.Product.Name,
                 Quantity = i.Quantity,
+                UnitPrice = i.UnitPrice
             });
         }
         public async Task<CartItemDTOResponse> GetCartItemById(int id)
@@ -78,7 +80,10 @@ namespace DrugEmpire.Application.services
             {
                 CartItemId = created.CartItemId,
                 CartId = created.CartId,
+                ProductId = created.ProductId,
+                ProductName = product.Name,
                 Quantity = created.Quantity,
+                UnitPrice = created.UnitPrice
             };
         }
         public async Task<CartItemDTOResponse> UpdateCartItem(int id, CartItemDTORequest cartItemDTORequest)
@@ -89,8 +94,6 @@ namespace DrugEmpire.Application.services
             if (cartItemDTORequest.CartId <= 0)
                 throw new Exception("CartId can't be empty");
 
-            if (cartItemDTORequest.CartItemId <= 0)
-                throw new Exception("ItemId can't be empty");
             if (cartItemDTORequest.ProductId <= 0)
                 throw new Exception("Product can't be empty");
             if (cartItemDTORequest.Quantity <= 0)
@@ -101,7 +104,6 @@ namespace DrugEmpire.Application.services
                 throw new Exception("CartItems not found");
 
             //update fields
-            existingCartItem.CartItemId = cartItemDTORequest.CartItemId;
             existingCartItem.ProductId = cartItemDTORequest.ProductId;
             existingCartItem.Quantity = cartItemDTORequest.Quantity;
 

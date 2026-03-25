@@ -9,9 +9,10 @@ namespace DrugEmpire.Domain.interfaces
     {
         Task<List<User>> GetAllUsersAsync();
         Task<User> GetUserByIdAsync(int userId);
-        Task AddUserAsync(User user);
-        Task UpdateUserAsync(User user);
-        Task DeleteUserAsync(int userId);
+        Task<User> CreateNewUserAsync(User user);
+        Task <User>UpdateUserAsync(int id, User updateuser);
+        Task<bool> DeleteUserByidAsync(int id);
+        Task<User?> GetByEmail(string email);
 
     }
 }

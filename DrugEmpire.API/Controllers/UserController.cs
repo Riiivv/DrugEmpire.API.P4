@@ -23,6 +23,20 @@ namespace DrugEmpire.API.Controllers
             _userService = userService;
         }
 
+        [HttpPost("login")]
+        public async Task<IActionResult> Login([FromBody] LoginRequest request)
+        {
+            var user = await _userService.Login(request.Email, request.Password);
+
+            if (user == null)
+                return Unauthorized();
+
+            return Ok(new
+            {
+                user.UserId,
+                user.Username
+            });
+        }
         // GET: api/User
         [HttpGet]
         public async Task<ActionResult<IEnumerable<UserDTOResponse>>> GetUsers()

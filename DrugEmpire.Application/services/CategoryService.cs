@@ -2,63 +2,62 @@
 using DrugEmpire.Application.interfaces;
 using DrugEmpire.Domain.entities;
 using DrugEmpire.Domain.interfaces;
-using System;
-using System.Collections.Generic;
-using System.Reflection.Metadata.Ecma335;
-using System.Text;
 
 namespace DrugEmpire.Application.services
 {
     public class CategoryService : ICategoryService
     {
-        private readonly ICategory _CategoryRepository;
-        public CategoryService(ICategory CategoryRepository)
+        private readonly ICategory _categoryRepository;
+
+        public CategoryService(ICategory categoryRepository)
         {
-            _CategoryRepository = CategoryRepository;
+            _categoryRepository = categoryRepository;
         }
 
         public async Task<IEnumerable<CategoryDTOResponse>> GetAllCategories()
         {
-            var category = await _CategoryRepository.GetAllCategoryAsync();
+            var categories = await _categoryRepository.GetAllCategoryAsync();
 
-            return category.Select(c => new CategoryDTOResponse
+            return categories.Select(c => new CategoryDTOResponse
             {
                 CategoryId = c.CategoryId,
-                Name = c.Name,
+                Name = c.Name
             });
         }
+
         public async Task<CategoryDTOResponse> GetCategoryById(int id)
         {
-            var Category = await _CategoryRepository.GetCategoryByIdAsync(id);
-            if (Category == null)
+            var category = await _categoryRepository.GetCategoryByIdAsync(id);
+
+            if (category == null)
                 throw new Exception("Category not found");
 
             return new CategoryDTOResponse
             {
-                CategoryId = Category.CategoryId,
-                Name = Category.Name,
+                CategoryId = category.CategoryId,
+                Name = category.Name
             };
         }
+
         public async Task<CategoryDTOResponse> CreateCategory(CategoryDTORequest categoryDTORequest)
         {
             if (categoryDTORequest == null)
                 throw new ArgumentNullException(nameof(categoryDTORequest));
 
-            if (categoryDTORequest.CategoryId <= 0)
-                throw new ArgumentException("Categoryid is required");
+            if (string.IsNullOrWhiteSpace(categoryDTORequest.Name))
+                throw new ArgumentException("Category name is required");
 
             var category = new Category
             {
-                CategoryId = categoryDTORequest.CategoryId,
-                Name = categoryDTORequest.Name,
+                Name = categoryDTORequest.Name
             };
 
-            var created = await _CategoryRepository.CreateCategory(category);
+            var created = await _categoryRepository.CreateCategory(category);
 
             return new CategoryDTOResponse
             {
                 CategoryId = created.CategoryId,
-                Name = created.Name,
+                Name = created.Name
             };
         }
 
@@ -67,30 +66,33 @@ namespace DrugEmpire.Application.services
             if (categoryDTORequest == null)
                 throw new ArgumentNullException(nameof(categoryDTORequest));
 
-            if (categoryDTORequest.CategoryId <= 0)
-                throw new Exception("Categoryid is required");
+            if (string.IsNullOrWhiteSpace(categoryDTORequest.Name))
+                throw new ArgumentException("Category name is required");
 
-            var existingCategory = await _CategoryRepository.GetCategoryByIdAsync(id);
-            if (existingCategory == null)
-                throw new Exception("category not found");
+            var existingCategory = await _categoryRepository.GetCategoryByIdAsync(id);
 
-            existingCategory.Name = categoryDTORequest.Name;
-
-            var updatedCategory = _CategoryRepository.UpdateCategoryAsync(id, existingCategory);
-
-            return new CategoryDTOResponse
-            {
-                CategoryId = categoryDTORequest.CategoryId,
-                Name = categoryDTORequest.Name
-            };
-        }
-        public async Task<bool> DeleteCategory(int id)
-        {
-            var existingCategory = await _CategoryRepository.GetCategoryByIdAsync(id);
             if (existingCategory == null)
                 throw new Exception("Category not found");
 
-            await _CategoryRepository.DeleteCategoryByIdAsync(id);
+            existingCategory.Name = categoryDTORequest.Name;
+
+            var updatedCategory = await _categoryRepository.UpdateCategoryAsync(id, existingCategory);
+
+            return new CategoryDTOResponse
+            {
+                CategoryId = updatedCategory.CategoryId,
+                Name = updatedCategory.Name
+            };
+        }
+
+        public async Task<bool> DeleteCategory(int id)
+        {
+            var existingCategory = await _categoryRepository.GetCategoryByIdAsync(id);
+
+            if (existingCategory == null)
+                throw new Exception("Category not found");
+
+            await _categoryRepository.DeleteCategoryByIdAsync(id);
             return true;
         }
     }

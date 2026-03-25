@@ -54,8 +54,8 @@ namespace DrugEmpire.Application.services
             var cart = new Cart
             {
                 UserId = cartDTORequest.UserId,
-                CreatedAt = cartDTORequest.CreatedAt,
-                UpdatedAt = cartDTORequest.UpdatedAt
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
             };
 
             var created = await _CartRepository.CreateCartAsync(cart);
@@ -91,7 +91,6 @@ namespace DrugEmpire.Application.services
                 UserId = updatedCart.UserId,
                 CreatedAt = updatedCart.CreatedAt,
                 UpdatedAt = updatedCart.UpdatedAt,
-
             };
         }
         public async Task <bool> DeleteCart(int id)

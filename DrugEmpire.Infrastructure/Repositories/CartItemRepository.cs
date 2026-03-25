@@ -18,17 +18,22 @@ namespace DrugEmpire.Infrastructure.Repositories
         public async Task<List<CartItem>> GetAllCartItems()
         {
             {
-                return await _context.CartItems.ToListAsync();
+                return await _context.CartItems
+                    .Include(c => c.Product)
+                    .ToListAsync();
             }
         }
         public async Task<CartItem>GetItemByIdAsync(int id)
         {
-            var existingCartItem = await _context.CartItems.FirstOrDefaultAsync();
-           
-            if (existingCartItem == null)
+            var existingCartItem = await _context.CartItems
+                .Include(c => c.Product)
+                .FirstOrDefaultAsync(c => c.CartId == id);
+
+            if(existingCartItem == null)
             {
-                throw new Exception("Your cart is empty");
+                throw new Exception("your cart is empty");
             }
+
             return existingCartItem;
         }
 

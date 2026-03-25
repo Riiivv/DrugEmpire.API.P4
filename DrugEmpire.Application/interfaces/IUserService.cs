@@ -1,4 +1,5 @@
 ﻿using DrugEmpire.Application.DTOs;
+using DrugEmpire.Domain.entities;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -12,6 +13,7 @@ namespace DrugEmpire.Application.interfaces
         Task<UserDTOResponse> CreateUser(UserDTORequest userDtoRequest);
         Task<UserDTOResponse> UpdateUser(int id, UserDTORequest userDtoRequest);
         Task<bool> DeleteUser(int id);
+        Task<User?> Login(string email, string password);
 
     }
 }

@@ -71,6 +71,9 @@ namespace DrugEmpire.Application.services
             if (string.IsNullOrWhiteSpace(userDtoRequest.PhoneNumber))
                 throw new Exception("PhoneNumber is required");
 
+            if (string.IsNullOrWhiteSpace(userDtoRequest.Password))
+                throw new Exception("Password is required");
+
             var entity = new User
             {
                 Username = userDtoRequest.Username,
@@ -78,12 +81,12 @@ namespace DrugEmpire.Application.services
                 FirstName = userDtoRequest.FirstName,
                 LastName = userDtoRequest.LastName,
                 PhoneNumber = userDtoRequest.PhoneNumber,
-                Role = userDtoRequest.Role
+                PasswordHash = userDtoRequest.Password, // midlertidigt
+                Role = "user"
             };
 
-            await _UserRepository.AddUserAsync(entity);
+            await _UserRepository.CreateNewUserAsync(entity);
 
-            // entity.UserId vil normalt være sat efter SaveChanges i repo
             return new UserDTOResponse
             {
                 UserId = entity.UserId,
@@ -125,9 +128,8 @@ namespace DrugEmpire.Application.services
             existing.FirstName = userDtoRequest.FirstName;
             existing.LastName = userDtoRequest.LastName;
             existing.PhoneNumber = userDtoRequest.PhoneNumber;
-            existing.Role = userDtoRequest.Role;
 
-            await _UserRepository.UpdateUserAsync(existing);
+            await _UserRepository.UpdateUserAsync(id, existing);
 
             return new UserDTOResponse
             {
@@ -147,8 +149,21 @@ namespace DrugEmpire.Application.services
             if (existing == null)
                 throw new Exception("User not found");
 
-            await _UserRepository.DeleteUserAsync(id);
+            await _UserRepository.DeleteUserByidAsync(id);
             return true;
+        }
+
+        public async Task<User?> Login(string email, string password)
+        {
+            var user = await _UserRepository.GetByEmail(email);
+
+            if (user == null)
+                return null;
+
+            if (user.PasswordHash != password) // midlertidigt
+                return null;
+
+            return user;
         }
     }
 }
