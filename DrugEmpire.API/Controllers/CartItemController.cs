@@ -61,10 +61,6 @@ namespace DrugEmpire.API.Controllers
             if (request == null)
                 return BadRequest("Request body cannot be empty.");
 
-            // Hvis din DTO har CartItemId, så håndhæv match:
-            if (request.CartItemId > 0 && id != request.CartItemId)
-                return BadRequest("Route ID does not match request body ID.");
-
             var updated = await _cartItemService.UpdateCartItem(id, request);
             return Ok(updated);
         }

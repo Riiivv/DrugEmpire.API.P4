@@ -49,11 +49,12 @@ namespace DrugEmpire.Application.services
         }
         public async Task<CartItemDTOResponse> CreateCartItem(CartItemDTORequest cartItemDTORequest)
         {
-            if(cartItemDTORequest == null)
+            if (cartItemDTORequest == null)
                 throw new ArgumentNullException(nameof(cartItemDTORequest));
 
-            if (cartItemDTORequest.CartId < 0)
+            if (cartItemDTORequest.CartId <= 0)
                 throw new Exception("CartId is required");
+
             if (cartItemDTORequest.ProductId <= 0)
                 throw new Exception("ProductId is required");
 
@@ -68,14 +69,39 @@ namespace DrugEmpire.Application.services
             if (product == null)
                 throw new Exception("Product not found");
 
+            // 🔥 Tjek om item allerede findes
+            var existingItem = await _CartItemRepository
+                .GetByCartIdAndProductIdAsync(cartItemDTORequest.CartId, cartItemDTORequest.ProductId);
+
+            // 👉 Hvis findes → opdater quantity
+            if (existingItem != null)
+            {
+                existingItem.Quantity += cartItemDTORequest.Quantity;
+
+                var updated = await _CartItemRepository.UpdateCartItemAsync(existingItem.CartItemId, existingItem);
+
+                return new CartItemDTOResponse
+                {
+                    CartItemId = updated.CartItemId,
+                    CartId = updated.CartId,
+                    ProductId = updated.ProductId,
+                    ProductName = product.Name,
+                    Quantity = updated.Quantity,
+                    UnitPrice = updated.UnitPrice
+                };
+            }
+
+            // 👉 Ellers opret nyt item
             var cartItem = new CartItem
             {
                 CartId = cartItemDTORequest.CartId,
                 ProductId = cartItemDTORequest.ProductId,
                 Quantity = cartItemDTORequest.Quantity,
+                UnitPrice = product.Price
             };
 
             var created = await _CartItemRepository.CreateCartItemAsync(cartItem);
+
             return new CartItemDTOResponse
             {
                 CartItemId = created.CartItemId,
@@ -107,7 +133,7 @@ namespace DrugEmpire.Application.services
             existingCartItem.ProductId = cartItemDTORequest.ProductId;
             existingCartItem.Quantity = cartItemDTORequest.Quantity;
 
-            var updateExistingCart = await _CartItemRepository.UpdateCartItemAsync(id ,existingCartItem);
+            var updateExistingCart = await _CartItemRepository.UpdateCartItemAsync(id, existingCartItem);
 
             return new CartItemDTOResponse
             {

@@ -18,6 +18,13 @@ namespace DrugEmpire.Infrastructure.Repositories
         {
             return await _context.Orders.ToListAsync();
         }
+        public async Task<List<Order>> GetOrdersByUserIdAsync(int userid)
+        {
+            return await _context.Orders
+                .Where(o => o.UserId == userid)
+                .OrderByDescending(o => o.CreatedAt)
+                .ToListAsync();
+        }
         public async Task<Order> GetOrderByIdAsync(int id)
         {
             var order = await _context.Orders.FindAsync(id);

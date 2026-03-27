@@ -31,6 +31,12 @@ namespace DrugEmpire.API.Controllers
             return Ok(orders);
         }
 
+        [HttpGet("user/{userId:int}")]
+        public async Task<ActionResult<IEnumerable<OrderDTOResponse>>> GetOrdersByUserId(int userId)
+        {
+            var orders = await _orderService.GetOrdersByUserId(userId);
+            return Ok(orders);
+        }
         // GET: api/Order/5
         [HttpGet("{id:int}")]
         public async Task<ActionResult<OrderDTOResponse>> GetOrderById(int id)
@@ -39,7 +45,22 @@ namespace DrugEmpire.API.Controllers
             if (order == null) return NotFound();
             return Ok(order);
         }
+        [HttpPost("checkout")]
+        public async Task<ActionResult<OrderDTOResponse>> Checkout([FromBody] CheckoutDTORequest request)
+        {
+            if (request == null)
+                return BadRequest("Request body cannot be empty.");
 
+            try
+            {
+                var order = await _orderService.Checkout(request);
+                return Ok(order);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.InnerException?.Message ?? ex.Message);
+            }
+        }
         // POST: api/Order
         [HttpPost]
         public async Task<ActionResult<OrderDTOResponse>> CreateOrder(

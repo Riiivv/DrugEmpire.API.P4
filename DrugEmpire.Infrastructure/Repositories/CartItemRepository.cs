@@ -15,6 +15,12 @@ namespace DrugEmpire.Infrastructure.Repositories
         {
             _context = context;
         }
+        public async Task<CartItem> GetByCartIdAndProductIdAsync(int cartId, int productId)
+        {
+            return await _context.CartItems
+                .Include(c => c.Product)
+                .FirstOrDefaultAsync(c => c.CartId == cartId && c.ProductId == productId);
+        }
         public async Task<List<CartItem>> GetAllCartItems()
         {
             {
@@ -27,7 +33,7 @@ namespace DrugEmpire.Infrastructure.Repositories
         {
             var existingCartItem = await _context.CartItems
                 .Include(c => c.Product)
-                .FirstOrDefaultAsync(c => c.CartId == id);
+                .FirstOrDefaultAsync(c => c.CartItemId == id);
 
             if(existingCartItem == null)
             {
