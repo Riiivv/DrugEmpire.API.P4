@@ -18,20 +18,25 @@ namespace DrugEmpire.Infrastructure.Repositories
         {
             return await _context.Orders.ToListAsync();
         }
-        public async Task<List<Order>> GetOrdersByUserIdAsync(int userid)
+        public async Task<List<Order>> GetOrdersByUserIdAsync(int userId)
         {
             return await _context.Orders
-                .Where(o => o.UserId == userid)
+                .Include(o => o.Items)
+                .Where(o => o.UserId == userId)
                 .OrderByDescending(o => o.CreatedAt)
                 .ToListAsync();
         }
         public async Task<Order> GetOrderByIdAsync(int id)
         {
-            var order = await _context.Orders.FindAsync(id);
+            var order = await _context.Orders
+                .Include(o => o.Items)
+                .FirstOrDefaultAsync(o => o.OrderId == id);
+
             if (order == null)
             {
                 throw new KeyNotFoundException("Order not found");
             }
+
             return order;
         }
         public async Task<Order> CreateOrderAsync(Order order)

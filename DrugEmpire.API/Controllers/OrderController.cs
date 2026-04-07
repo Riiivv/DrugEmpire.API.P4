@@ -2,12 +2,14 @@
 using DrugEmpire.Application.interfaces;
 using DrugEmpire.Domain.entities;
 using DrugEmpire.Infrastructure;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace DrugEmpire.API.Controllers
@@ -28,6 +30,13 @@ namespace DrugEmpire.API.Controllers
         public async Task<ActionResult<IEnumerable<OrderDTOResponse>>> GetAllOrders()
         {
             var orders = await _orderService.GetAllOrders();
+            return Ok(orders);
+        }
+
+        [HttpGet("my-orders/{userId:int}")]
+        public async Task<ActionResult<IEnumerable<OrderDTOResponse>>> GetMyOrders(int userId)
+        {
+            var orders = await _orderService.GetOrdersByUserId(userId);
             return Ok(orders);
         }
 

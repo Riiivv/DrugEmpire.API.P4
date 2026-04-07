@@ -47,7 +47,17 @@ namespace DrugEmpire.Application.services
                 Status = o.Status,
                 Subtotal = o.Subtotal,
                 Total = o.Total,
-                CreatedAt = o.CreatedAt
+                CreatedAt = o.CreatedAt,
+                Items = o.Items.Select(i => new OrderItemDTOResponse
+                {
+                    OrderItemId = i.OrderItemId,
+                    OrderId = i.OrderId,
+                    ProductId = i.ProductId,
+                    ProductNameSnapshot = i.ProductNameSnapshot,
+                    UnitPriceSnapshot = i.UnitPriceSnapshot,
+                    Quantity = i.Quantity,
+                    Price = i.Price
+                }).ToList()
             });
         }
 
@@ -61,10 +71,22 @@ namespace DrugEmpire.Application.services
             {
                 OrderId = order.OrderId,
                 UserId = order.UserId,
+                OrderNumber = order.OrderNumber,
                 Status = order.Status,
                 Subtotal = order.Subtotal,
                 Total = order.Total,
-                CreatedAt = order.CreatedAt
+                CreatedAt = order.CreatedAt,
+
+                Items = order.Items.Select(i => new OrderItemDTOResponse
+                {
+                    OrderItemId = i.OrderItemId,
+                    OrderId = i.OrderId,
+                    ProductId = i.ProductId,
+                    ProductNameSnapshot = i.ProductNameSnapshot,
+                    UnitPriceSnapshot = i.UnitPriceSnapshot,
+                    Quantity = i.Quantity,
+                    Price = i.Price
+                }).ToList()
             };
         }
 

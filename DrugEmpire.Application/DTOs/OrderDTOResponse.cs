@@ -28,5 +28,6 @@ namespace DrugEmpire.Application.DTOs
         public string ShippingPostalCode { get; set; }
         public string ShippingCountry { get; set; }
         public string ShippingPhoneNumber { get; set; }
+        public List<OrderItemDTOResponse> Items { get; set; } = new();
     }
 }
